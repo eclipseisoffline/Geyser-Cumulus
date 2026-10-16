@@ -23,11 +23,11 @@ public final class CustomFormResponseImpl implements CustomFormResponse {
   private int index = -1;
   private boolean includeLabels = false;
 
-  private CustomFormResponseImpl(List<Object> responses) {
+  private CustomFormResponseImpl(List<@Nullable Object> responses) {
     this.responses = Collections.unmodifiableList(responses);
   }
 
-  public static CustomFormResponse of(List<Object> responses) {
+  public static CustomFormResponse of(List<@Nullable Object> responses) {
     Objects.requireNonNull(responses, "responses");
     return new CustomFormResponseImpl(responses);
   }
@@ -105,7 +105,7 @@ public final class CustomFormResponseImpl implements CustomFormResponse {
    * @return null for label components and {@link AbsentComponent} for optional components that were
    *     not added
    */
-  private <T> T nextOrAbsent() {
+  private <T> @Nullable T nextOrAbsent() {
     return nextOrAbsent(includeLabels);
   }
 

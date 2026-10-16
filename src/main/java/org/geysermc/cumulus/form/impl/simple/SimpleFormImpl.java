@@ -22,9 +22,9 @@ import org.jspecify.annotations.Nullable;
 
 public final class SimpleFormImpl extends FormImpl<SimpleFormResponse> implements SimpleForm {
   private final String content;
-  private final List<ButtonComponent> buttons;
+  private final List<@Nullable ButtonComponent> buttons;
 
-  public SimpleFormImpl(String title, String content, List<ButtonComponent> buttons) {
+  public SimpleFormImpl(String title, String content, List<@Nullable ButtonComponent> buttons) {
     super(title);
     this.content = Objects.requireNonNull(content, "content");
     this.buttons = Collections.unmodifiableList(buttons);
@@ -36,7 +36,7 @@ public final class SimpleFormImpl extends FormImpl<SimpleFormResponse> implement
   }
 
   @Override
-  public List<ButtonComponent> buttons() {
+  public List<@Nullable ButtonComponent> buttons() {
     return buttons;
   }
 
@@ -44,7 +44,7 @@ public final class SimpleFormImpl extends FormImpl<SimpleFormResponse> implement
       extends FormImpl.Builder<SimpleForm.Builder, SimpleForm, SimpleFormResponse>
       implements SimpleForm.Builder {
 
-    private final List<ButtonComponent> buttons = new ArrayList<>();
+    private final List<@Nullable ButtonComponent> buttons = new ArrayList<>();
     private final Map<Integer, Consumer<SimpleFormResponse>> callbacks = new HashMap<>();
     private String content = "";
 

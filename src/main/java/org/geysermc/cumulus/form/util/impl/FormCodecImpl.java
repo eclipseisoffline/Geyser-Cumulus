@@ -51,7 +51,9 @@ public abstract class FormCodecImpl<F extends Form, R extends FormResponse>
   public final F fromJson(
       String json, @Nullable BiConsumer<F, @Nullable String> rawResponseConsumer) {
     F form = gson.fromJson(json, typeClass);
-    setRawResponseConsumer(form, rawResponseConsumer);
+    if (rawResponseConsumer != null) {
+      setRawResponseConsumer(form, rawResponseConsumer);
+    }
     return form;
   }
 

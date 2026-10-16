@@ -21,8 +21,8 @@ import org.geysermc.cumulus.response.result.ValidFormResponseResult;
 import org.jspecify.annotations.Nullable;
 
 public abstract class FormImpl<R extends FormResponse> implements Form {
-  protected Consumer<FormResponseResult<R>> responseHandler;
-  protected Consumer<@Nullable String> rawResponseConsumer;
+  protected @Nullable Consumer<FormResponseResult<R>> responseHandler;
+  protected @Nullable Consumer<@Nullable String> rawResponseConsumer;
 
   private final String title;
 
@@ -42,7 +42,7 @@ public abstract class FormImpl<R extends FormResponse> implements Form {
     this.rawResponseConsumer = rawResponseConsumer;
   }
 
-  public void callResultHandler(@Nullable FormResponseResult<R> response) throws Exception {
+  public void callResultHandler(FormResponseResult<R> response) throws Exception {
     if (responseHandler != null) {
       responseHandler.accept(response);
     }
@@ -63,15 +63,15 @@ public abstract class FormImpl<R extends FormResponse> implements Form {
 
     protected String title = "";
 
-    protected BiFunction<String, String, String> translationHandler = null;
-    protected String locale;
+    protected @Nullable BiFunction<String, String, @Nullable String> translationHandler = null;
+    protected @Nullable String locale;
 
-    protected BiConsumer<F, FormResponseResult<R>> selectedResultHandler;
+    protected @Nullable BiConsumer<F, FormResponseResult<R>> selectedResultHandler;
 
-    protected Consumer<F> closedResultHandlerConsumer;
-    protected BiConsumer<F, InvalidFormResponseResult<R>> invalidResultHandler;
-    protected BiConsumer<F, FormResponseResult<R>> closedOrInvalidResultHandler;
-    protected BiConsumer<F, R> validResultHandler;
+    protected @Nullable Consumer<F> closedResultHandlerConsumer;
+    protected @Nullable BiConsumer<F, InvalidFormResponseResult<R>> invalidResultHandler;
+    protected @Nullable BiConsumer<F, FormResponseResult<R>> closedOrInvalidResultHandler;
+    protected @Nullable BiConsumer<F, R> validResultHandler;
 
     @Override
     public B title(String title) {
@@ -80,14 +80,15 @@ public abstract class FormImpl<R extends FormResponse> implements Form {
     }
 
     @Override
-    public B translator(BiFunction<String, String, String> translator, String locale) {
+    public B translator(BiFunction<String, String, @Nullable String> translator, String locale) {
       this.translationHandler = Objects.requireNonNull(translator, "translator");
       this.locale = Objects.requireNonNull(locale, "locale");
       return title(title);
     }
 
+    @SuppressWarnings("DataFlowIssue") // Objects.requireNonNull in method above
     @Override
-    public B translator(BiFunction<String, String, String> translator) {
+    public B translator(BiFunction<String, String, @Nullable String> translator) {
       return translator(translator, locale);
     }
 
@@ -228,7 +229,11 @@ public abstract class FormImpl<R extends FormResponse> implements Form {
       Objects.requireNonNull(text, "text");
 
       if (translationHandler != null && !text.isEmpty()) {
-        String result = translationHandler.apply(text, locale);
+        String result =
+            translationHandler.apply(
+                text,
+                Objects.requireNonNull(
+                    locale, "locale must not be null if a translationHandler is added"));
         return result != null ? result : text;
       }
 

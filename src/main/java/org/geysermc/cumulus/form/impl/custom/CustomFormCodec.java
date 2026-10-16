@@ -29,6 +29,7 @@ import org.geysermc.cumulus.util.FormImage;
 import org.geysermc.cumulus.util.JsonUtils;
 import org.geysermc.cumulus.util.impl.FormImageAdaptor;
 import org.geysermc.cumulus.util.impl.FormImageImpl;
+import org.jspecify.annotations.Nullable;
 
 public final class CustomFormCodec extends FormCodecImpl<CustomForm, CustomFormResponse> {
   CustomFormCodec() {
@@ -80,10 +81,10 @@ public final class CustomFormCodec extends FormCodecImpl<CustomForm, CustomFormR
     JsonArray responses = gson.fromJson(responseData, JsonArray.class);
     int responsesSize = responses.size();
 
-    List<Object> mappedResponse = new ArrayList<>();
+    List<@Nullable Object> mappedResponse = new ArrayList<>();
 
     int responseIndex = 0;
-    List<Component> content = form.content();
+    List<@Nullable Component> content = form.content();
     for (int i = 0; i < content.size(); i++) {
       Component component = content.get(i);
       if (component == null) {
@@ -111,7 +112,7 @@ public final class CustomFormCodec extends FormCodecImpl<CustomForm, CustomFormR
     return FormResponseResult.valid(CustomFormResponseImpl.of(mappedResponse));
   }
 
-  private Object validateComponent(Component component, JsonElement element) {
+  private @Nullable Object validateComponent(Component component, JsonElement element) {
     ComponentType type = component.type();
     if (type == ComponentType.LABEL) {
       if (element.isJsonNull()) {

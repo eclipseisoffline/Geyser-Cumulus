@@ -27,22 +27,22 @@ import org.jspecify.annotations.Nullable;
 
 public final class CustomFormImpl extends FormImpl<CustomFormResponse> implements CustomForm {
 
-  private final FormImage icon;
-  private final List<Component> content;
+  private final @Nullable FormImage icon;
+  private final List<@Nullable Component> content;
 
-  public CustomFormImpl(String title, @Nullable FormImage icon, List<Component> content) {
+  public CustomFormImpl(String title, @Nullable FormImage icon, List<@Nullable Component> content) {
     super(title);
     this.icon = icon;
     this.content = Collections.unmodifiableList(content);
   }
 
   @Override
-  public FormImage icon() {
+  public @Nullable FormImage icon() {
     return icon;
   }
 
   @Override
-  public List<Component> content() {
+  public List<@Nullable Component> content() {
     return content;
   }
 
@@ -50,8 +50,8 @@ public final class CustomFormImpl extends FormImpl<CustomFormResponse> implement
       extends FormImpl.Builder<CustomForm.Builder, CustomForm, CustomFormResponse>
       implements CustomForm.Builder {
 
-    private final List<Component> components = new ArrayList<>();
-    private FormImage icon;
+    private final List<@Nullable Component> components = new ArrayList<>();
+    private @Nullable FormImage icon;
 
     @Override
     public Builder icon(FormImage image) {

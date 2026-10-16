@@ -16,6 +16,7 @@ import org.geysermc.cumulus.response.result.FormResponseResult;
 import org.geysermc.cumulus.response.result.InvalidFormResponseResult;
 import org.geysermc.cumulus.response.result.ResultType;
 import org.geysermc.cumulus.response.result.ValidFormResponseResult;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A FormBuilder for the specified Form type in an easy to handle class.
@@ -41,13 +42,14 @@ public interface FormBuilder<
    * component has).<br>
    * <br>
    * Note that the translation is executed when building the form. This info will not be present in
-   * the final form instance.
+   * the final form instance. <br>
+   * If the translator returns null for a given string, that original, untranslated string is used.
    *
    * @param translator the translator that will translate every string. First argument is the text
    *     to translate, the second argument is the player's locale
    * @param locale the locale to translate the messages to
    */
-  @This B translator(BiFunction<String, String, String> translator, String locale);
+  @This B translator(BiFunction<String, String, @Nullable String> translator, String locale);
 
   /**
    * Set the translator of the form. The translator is called every time a component is added, and
@@ -58,12 +60,13 @@ public interface FormBuilder<
    * the final form instance.<br>
    * <br>
    * This specific method assumes that {@link #translator(BiFunction, String)} has been executed
-   * before, because this method will reuse the same locale.
+   * before, because this method will reuse the same locale. <br>
+   * If the translator returns null for a given string, that original, untranslated string is used.
    *
    * @param translator the translator that will translate every string. First argument is the text
    *     to translate, the second argument is the player's locale
    */
-  @This B translator(BiFunction<String, String, String> translator);
+  @This B translator(BiFunction<String, String, @Nullable String> translator);
 
   /**
    * Registers a result handler for the 'closed' result type. Calling this specific method more than

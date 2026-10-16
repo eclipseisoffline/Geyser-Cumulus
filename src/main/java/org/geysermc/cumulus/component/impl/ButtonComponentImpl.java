@@ -12,7 +12,7 @@ import org.jspecify.annotations.Nullable;
 
 public final class ButtonComponentImpl implements ButtonComponent {
   private final String text;
-  private final FormImage image;
+  private final @Nullable FormImage image;
 
   public ButtonComponentImpl(String text, @Nullable FormImage image) {
     this.text = Objects.requireNonNull(text, "text");
