@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 GeyserMC
+ * Copyright (c) 2024-2026 GeyserMC
  * Licensed under the MIT license
  * @link https://github.com/GeyserMC/Cumulus
  */
@@ -11,8 +11,6 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.geysermc.cumulus.form.Form;
 import org.geysermc.cumulus.form.util.FormBuilder;
 import org.geysermc.cumulus.response.FormResponse;
@@ -20,6 +18,7 @@ import org.geysermc.cumulus.response.result.FormResponseResult;
 import org.geysermc.cumulus.response.result.InvalidFormResponseResult;
 import org.geysermc.cumulus.response.result.ResultType;
 import org.geysermc.cumulus.response.result.ValidFormResponseResult;
+import org.jspecify.annotations.Nullable;
 
 public abstract class FormImpl<R extends FormResponse> implements Form {
   protected Consumer<FormResponseResult<R>> responseHandler;
@@ -27,7 +26,7 @@ public abstract class FormImpl<R extends FormResponse> implements Form {
 
   private final String title;
 
-  public FormImpl(@NonNull String title) {
+  public FormImpl(String title) {
     this.title = Objects.requireNonNull(title, "title");
   }
 
@@ -49,12 +48,12 @@ public abstract class FormImpl<R extends FormResponse> implements Form {
     }
   }
 
-  public void resultHandler(@NonNull Consumer<FormResponseResult<R>> responseHandler) {
+  public void resultHandler(Consumer<FormResponseResult<R>> responseHandler) {
     this.responseHandler = Objects.requireNonNull(responseHandler);
   }
 
   @Override
-  public @NonNull String title() {
+  public String title() {
     return title;
   }
 
@@ -75,96 +74,92 @@ public abstract class FormImpl<R extends FormResponse> implements Form {
     protected BiConsumer<F, R> validResultHandler;
 
     @Override
-    public B title(@NonNull String title) {
+    public B title(String title) {
       this.title = translate(Objects.requireNonNull(title, "title"));
       return self();
     }
 
     @Override
-    public B translator(
-        @NonNull BiFunction<String, String, String> translator, @NonNull String locale) {
+    public B translator(BiFunction<String, String, String> translator, String locale) {
       this.translationHandler = Objects.requireNonNull(translator, "translator");
       this.locale = Objects.requireNonNull(locale, "locale");
       return title(title);
     }
 
     @Override
-    public B translator(@NonNull BiFunction<String, String, String> translator) {
+    public B translator(BiFunction<String, String, String> translator) {
       return translator(translator, locale);
     }
 
     @Override
-    public B closedResultHandler(@NonNull Consumer<F> resultHandler) {
+    public B closedResultHandler(Consumer<F> resultHandler) {
       this.closedResultHandlerConsumer = Objects.requireNonNull(resultHandler, "resultHandler");
       return self();
     }
 
     @Override
-    public B closedResultHandler(@NonNull Runnable resultHandler) {
+    public B closedResultHandler(Runnable resultHandler) {
       Objects.requireNonNull(resultHandler, "resultHandler");
       return closedResultHandler($ -> resultHandler.run());
     }
 
     @Override
-    public B invalidResultHandler(@NonNull Runnable resultHandler) {
+    public B invalidResultHandler(Runnable resultHandler) {
       Objects.requireNonNull(resultHandler, "resultHandler");
       return invalidResultHandler(($, $$) -> resultHandler.run());
     }
 
     @Override
-    public B invalidResultHandler(@NonNull Consumer<InvalidFormResponseResult<R>> resultHandler) {
+    public B invalidResultHandler(Consumer<InvalidFormResponseResult<R>> resultHandler) {
       Objects.requireNonNull(resultHandler, "resultHandler");
       return invalidResultHandler(($, result) -> resultHandler.accept(result));
     }
 
     @Override
-    public B invalidResultHandler(
-        @NonNull BiConsumer<F, InvalidFormResponseResult<R>> resultHandler) {
+    public B invalidResultHandler(BiConsumer<F, InvalidFormResponseResult<R>> resultHandler) {
       this.invalidResultHandler = Objects.requireNonNull(resultHandler, "resultHandler");
       return self();
     }
 
     @Override
-    public B closedOrInvalidResultHandler(@NonNull Runnable resultHandler) {
+    public B closedOrInvalidResultHandler(Runnable resultHandler) {
       Objects.requireNonNull(resultHandler, "resultHandler");
       return closedOrInvalidResultHandler(($, $$) -> resultHandler.run());
     }
 
     @Override
-    public B closedOrInvalidResultHandler(@NonNull Consumer<FormResponseResult<R>> resultHandler) {
+    public B closedOrInvalidResultHandler(Consumer<FormResponseResult<R>> resultHandler) {
       Objects.requireNonNull(resultHandler, "resultHandler");
       return closedOrInvalidResultHandler(($, result) -> resultHandler.accept(result));
     }
 
     @Override
-    public B closedOrInvalidResultHandler(
-        @NonNull BiConsumer<F, FormResponseResult<R>> resultHandler) {
+    public B closedOrInvalidResultHandler(BiConsumer<F, FormResponseResult<R>> resultHandler) {
       this.closedOrInvalidResultHandler = Objects.requireNonNull(resultHandler, "resultHandler");
       return self();
     }
 
     @Override
-    public B validResultHandler(@NonNull Consumer<R> resultHandler) {
+    public B validResultHandler(Consumer<R> resultHandler) {
       Objects.requireNonNull(resultHandler, "resultHandler");
       return validResultHandler(($, result) -> resultHandler.accept(result));
     }
 
     @Override
-    public B validResultHandler(@NonNull BiConsumer<F, R> resultHandler) {
+    public B validResultHandler(BiConsumer<F, R> resultHandler) {
       this.validResultHandler = Objects.requireNonNull(resultHandler, "resultHandler");
       return self();
     }
 
     @Override
-    public B resultHandler(@NonNull BiConsumer<F, FormResponseResult<R>> resultHandler) {
+    public B resultHandler(BiConsumer<F, FormResponseResult<R>> resultHandler) {
       this.selectedResultHandler = Objects.requireNonNull(resultHandler, "resultHandler");
       return self();
     }
 
     @Override
     public B resultHandler(
-        @NonNull BiConsumer<F, FormResponseResult<R>> resultHandler,
-        @NonNull ResultType[] selectedTypes) {
+        BiConsumer<F, FormResponseResult<R>> resultHandler, ResultType[] selectedTypes) {
       Objects.requireNonNull(resultHandler, "resultHandler");
       Objects.requireNonNull(selectedTypes, "selectedTypes");
 
@@ -185,14 +180,14 @@ public abstract class FormImpl<R extends FormResponse> implements Form {
     }
 
     @Override
-    public abstract @NonNull F build();
+    public abstract F build();
 
-    protected void setResponseHandler(@NonNull FormImpl<R> impl, @NonNull F form) {
+    protected void setResponseHandler(FormImpl<R> impl, F form) {
       setResponseHandler(impl, form, null);
     }
 
     protected void setResponseHandler(
-        @NonNull FormImpl<R> impl, @NonNull F form, @Nullable Consumer<R> validHandler) {
+        FormImpl<R> impl, F form, @Nullable Consumer<R> validHandler) {
       impl.resultHandler(
           result -> {
             if (selectedResultHandler != null) {
@@ -229,7 +224,7 @@ public abstract class FormImpl<R extends FormResponse> implements Form {
           });
     }
 
-    protected @NonNull String translate(@NonNull String text) {
+    protected String translate(String text) {
       Objects.requireNonNull(text, "text");
 
       if (translationHandler != null && !text.isEmpty()) {
